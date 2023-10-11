@@ -1,6 +1,6 @@
 {
   "name": "Vungoi.vn Answer getter",
-  "description": "",
+  "description": "A chrome extension allowed you to get free solution details (explainations) that only available for VIP Accounts on vungoi.vn.",
   "version": "0.0.2",
   "manifest_version": 3,
   "permissions": ["activeTab"],
