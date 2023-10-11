@@ -59,6 +59,9 @@ function watch(elem, cb) {
 const header =
   "<p><b>(vungoi-answer-getter) Lời giải của GV Vungoi.vn:</b></p>";
 const sugHeader = "<p><b>Gợi ý:</b></p>";
+
+let backupSol, backupSug;
+
 console.log("INJECTED");
 const { fetch: origFetch } = window;
 window.fetch = async function (url, ...args) {
@@ -66,13 +69,18 @@ window.fetch = async function (url, ...args) {
   if (url.includes("getQuiz")) {
     console.log("New Question detected.");
     const data = await response.json();
-    const explainationHtmls = data.quiz.solution_detail.map(
+    const explainationHtmls = data?.quiz?.solution_detail?.map(
       (obj) => obj.content
-    );
-    const suggestionHtmls = data.quiz.solution_suggesstion.map(
+    ) || backupSol;
+    const suggestionHtmls = data?.quiz?.solution_suggesstion?.map(
       (obj) => obj.content
-    );
+    ) || backupSug;
+
+    backupSol = explainationHtmls;
+    backupSug = suggestionHtmls;
+    
     const solutionElements = document.getElementById("solution-undefined");
+    console.log(solutionElements);
     if (solutionElements) {
       console.log("Showing solution...");
       const solutionElement = nodeWithClass(
