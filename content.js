@@ -19,6 +19,10 @@ injectedCss.textContent = `
     pointer-events: auto!important;
     user-select: auto!important;
   }
+
+  .rich_text {
+    user-select: auto!important;
+  }
 `;
 document.documentElement.appendChild(injectedCss);
 
@@ -88,4 +92,3 @@ window.fetch = async function (url, ...args) {
   }
   return response;
 };
-// quiz - suggestion;
