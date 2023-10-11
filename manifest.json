@@ -3,11 +3,7 @@
   "description": "",
   "version": "0.0.1",
   "manifest_version": 3,
-  "browser_action": {
-    "default_title": "Lấy lời giải miễn phí!"
-  },
   "permissions": ["activeTab"],
-  "default_icon": "icon.png",
   "content_scripts": [
     {
       "matches": ["*://vungoi.vn/*"],
