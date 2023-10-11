@@ -5,8 +5,31 @@ injectedCss.textContent = `
     outline: 1px solid #3498db;
     border-radius: 8px;
   }
+  .disable-events {
+    pointer-events: auto!important;
+    user-select: auto!important;
+  }
+
+  .enable-events {
+    pointer-events: auto!important;
+    user-select: auto!important;
+  }
+
+  .content-quiz {
+    pointer-events: auto!important;
+    user-select: auto!important;
+  }
 `;
 document.documentElement.appendChild(injectedCss);
+
+// Enable contextmenu
+const listen = document.addEventListener;
+document.addEventListener = function (e, ...args) {
+  if (e === "contextmenu" || e === "keyup" || e === "keydown") {
+    return;
+  }
+  return listen.bind(document)(e, ...args);
+};
 
 function nodeWithClass(tag, classname, innerhtml) {
   const el = document.createElement(tag);
@@ -29,7 +52,8 @@ function watch(elem, cb) {
   observer.observe(elem, { childList: true, subtree: true });
 }
 
-const header = "<p><b>(vungoi-answer-getter) Lời giải của GV Vungoi.vn:</b></p>";
+const header =
+  "<p><b>(vungoi-answer-getter) Lời giải của GV Vungoi.vn:</b></p>";
 const sugHeader = "<p><b>Gợi ý:</b></p>";
 console.log("INJECTED");
 const { fetch: origFetch } = window;
