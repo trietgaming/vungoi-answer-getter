@@ -58,9 +58,9 @@ function watch(elem, cb) {
 
 const header =
   "<p><b>(vungoi-answer-getter) Lời giải của GV Vungoi.vn:</b></p>";
-const sugHeader = "<p><b>Gợi ý:</b></p>";
+const sugHeader = "<p><b>Gợi ý/Phương pháp giải:</b></p>";
 
-let backupSol, backupSug;
+let backupSol, backupSug, lastQuestionIdx;
 
 console.log("INJECTED");
 const { fetch: origFetch } = window;
@@ -69,16 +69,19 @@ window.fetch = async function (url, ...args) {
   if (url.includes("getQuiz")) {
     console.log("New Question detected.");
     const data = await response.json();
-    const explainationHtmls = data?.quiz?.solution_detail?.map(
-      (obj) => obj.content
-    ) || backupSol;
-    const suggestionHtmls = data?.quiz?.solution_suggesstion?.map(
-      (obj) => obj.content
-    ) || backupSug;
+    const explainationHtmls =
+      data?.quiz?.solution_detail?.map((obj) => obj.content) ||
+      (lastQuestionIdx != currentQuestionIdx && backupSol);
+    const suggestionHtmls =
+      data?.quiz?.solution_suggesstion?.map((obj) => obj.content) ||
+      (lastQuestionIdx != currentQuestionIdx && backupSug);
+
+    const currentQuestionIdx = data?.quiz?.idx || lastQuestionIdx;
 
     backupSol = explainationHtmls;
     backupSug = suggestionHtmls;
-    
+    lastQuestionIdx = currentQuestionIdx;
+
     const solutionElements = document.getElementById("solution-undefined");
     console.log(solutionElements);
     if (solutionElements) {
