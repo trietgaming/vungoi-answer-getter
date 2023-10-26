@@ -13,3 +13,5 @@ Vungoi answer getter is a chrome extension allowed you to get free solution deta
 6. Select the unzipped folder.
 7. Enable the extension (if disabled).
 8. Enjoy!
+
+**Note:** Use this at your own risk!
