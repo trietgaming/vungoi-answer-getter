@@ -28,6 +28,45 @@ document.documentElement.appendChild(injectedCss);
 
 // Enable contextmenu
 const listen = document.addEventListener;
+
+function nonEmptyArray(...args) {
+  for (const arg of args) {
+    if (arg && arg.length > 0) return arg;
+  }
+  return [];
+}
+
+listen("keydown", function (e) {
+  const answerOptions = nonEmptyArray(
+    document.getElementsByClassName("option-answers"),
+    document.getElementsByClassName("vn-box-answer")[0]?.children[0]?.children
+  );
+
+  let pick = null;
+  if (e.key.toUpperCase() === "A" || e.key === "1") {
+    pick = answerOptions[0];
+  } else if (e.key.toUpperCase() === "B" || e.key === "2") {
+    pick = answerOptions[1];
+  } else if (e.key.toUpperCase() === "C" || e.key === "3") {
+    pick = answerOptions[2];
+  } else if (e.key.toUpperCase() === "D" || e.key === "4") {
+    pick = answerOptions[3];
+  } else if (e.key === "Enter" || e.key === "ArrowRight") {
+    const next =
+      document.getElementsByClassName("btn-green btn-action")[0] ||
+      document.getElementsByClassName("bg-green")[0];
+    next.click();
+  } else if (e.key === "0") {
+    const sol = document.getElementsByClassName("bg-grey btn-action")[0];
+    if (document.getElementsByClassName("fa-angle-double-down").length === 0)
+      sol?.click();
+    setTimeout(() => sol?.scrollIntoView(), 100);
+  } else if (e.key === "`" || e.key === ".") {
+    document.getElementById("package")?.scrollIntoView();
+  }
+  pick?.click();
+});
+
 document.addEventListener = function (e, ...args) {
   if (e === "contextmenu" || e === "keyup" || e === "keydown") {
     return;
@@ -40,20 +79,6 @@ function nodeWithClass(tag, classname, innerhtml) {
   el.className = classname;
   el.innerHTML = innerhtml;
   return el;
-}
-
-let callback;
-
-const observer = new MutationObserver(function (mutations) {
-  // console.log("Calling cb:", callback);
-  if (callback) callback();
-  observer.disconnect();
-});
-
-function watch(elem, cb) {
-  callback = cb;
-  // console.log("observing", elem);
-  observer.observe(elem, { childList: true, subtree: true });
 }
 
 const header =
@@ -81,25 +106,27 @@ window.fetch = async function (url, ...args) {
     backupSol = explainationHtmls;
     backupSug = suggestionHtmls;
     lastQuestionIdx = currentQuestionIdx;
-
-    const solutionElements = document.getElementById("solution-undefined");
-    console.log(solutionElements);
-    if (solutionElements) {
-      console.log("Showing solution...");
-      const solutionElement = nodeWithClass(
-        "div",
-        "solution-item vungoianswergetter",
-        header + explainationHtmls
-      );
-      const suggestionElement = nodeWithClass(
-        "div",
-        "solution-item vungoianswergetter",
-        sugHeader + suggestionHtmls
-      );
-      solutionElements.textContent = "";
-      solutionElements.appendChild(suggestionElement);
-      solutionElements.appendChild(solutionElement);
-    }
+  } else if (url.includes("answer")) {
+    setTimeout(() => {
+      const solutionElements = document.getElementById("solution-undefined");
+      // console.log(solutionElements);
+      if (solutionElements) {
+        console.log("Showing solution...");
+        const solutionElement = nodeWithClass(
+          "div",
+          "solution-item vungoianswergetter",
+          header + backupSol
+        );
+        const suggestionElement = nodeWithClass(
+          "div",
+          "solution-item vungoianswergetter",
+          sugHeader + backupSug
+        );
+        solutionElements.textContent = "";
+        solutionElements.appendChild(suggestionElement);
+        solutionElements.appendChild(solutionElement);
+      }
+    }, 50);
   }
   return response;
 };
